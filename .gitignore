@@ -1,2 +1,14 @@
 
-.settings/org.eclipse.jdt.core.prefs
+.settings/
+
+bin/
+
+deploy
+
+generatedSrc
+
+*.ear
+
+*.war
+
+*.class

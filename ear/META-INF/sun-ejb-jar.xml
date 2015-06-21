@@ -4,12 +4,6 @@ DTD GlassFish Application Server 3.0 EJB 3.1//EN"
 <sun-ejb-jar>
 	<enterprise-beans>
 		<ejb>
-			<!-- <jndi-name>customer</jndi-name> <bean-pool> <steady-pool-size>10</steady-pool-size> 
-				<resize-quantity>10</resize-quantity> <max-pool-size>100</max-pool-size> 
-				<pool-idle-timeout-in-seconds>600</pool-idle-timeout-in-seconds> </bean-pool> 
-				<bean-cache> <max-cache-size>100</max-cache-size> <resize-quantity>10</resize-quantity> 
-				<removal-timeout-in-seconds>3600</removal-timeout-in-seconds> <victim-selection-policy>LRU</victim-selection-policy> 
-				</bean-cache> -->
 			<ejb-name>com.devwithimagination.proxy.ws.Hello</ejb-name>
 			<webservice-endpoint>
 				<port-component-name>HelloWS</port-component-name>
@@ -19,6 +13,18 @@ DTD GlassFish Application Server 3.0 EJB 3.1//EN"
 					<realm>certificate</realm>
 				</login-config>
 				<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+			</webservice-endpoint>
+		</ejb>
+		
+		<ejb>
+			<ejb-name>com.devwithimagination.proxy.ws.HelloTwo</ejb-name>
+			<webservice-endpoint>
+				<port-component-name>HelloTwoWS</port-component-name>
+				<endpoint-address-uri>HelloTwoWS</endpoint-address-uri>
+				<login-config>
+					<auth-method>CLIENT-CERT</auth-method>
+					<realm>certificate</realm>
+				</login-config>
 			</webservice-endpoint>
 		</ejb>
 	</enterprise-beans>
