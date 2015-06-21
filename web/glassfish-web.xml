@@ -1,0 +1,6 @@
+<glassfish-web-app>
+    <security-role-mapping>
+        <role-name>master-technician</role-name>
+        <principal-name>CN=Dev Client 1, OU=DevClients, O=Client1, C=GB</principal-name>
+    </security-role-mapping>
+</glassfish-web-app>

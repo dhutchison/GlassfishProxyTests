@@ -1,0 +1,82 @@
+<project name="ProxyTests" basedir=".">
+	<description>
+        Description
+    </description>
+
+
+	<path id="server.libpath">
+		<fileset dir="${glassfish.home}">
+			<include name="lib/appserv-rt.jar"/>
+			<include name="lib/javaee.jar"/>
+			<include name="lib/webservices-rt.jar"/>
+			<include name="lib/webservices-tools.jar"/>
+		</fileset>
+	</path>
+	<property name="server.libpath" refid="server.libpath"/>
+
+	<target name="Build Server Source" description="compile the server source">
+
+		<delete dir="bin"/>
+		<mkdir dir="bin"/>
+
+		<javac srcdir="src" destdir="bin" classpath="${server.libpath}" target="1.6" source="1.6"/>
+	</target>
+
+	<target name="Build Proxy Jar" depends="Build Server Source">
+		<mkdir dir="deploy"/>
+		<mkdir dir="deploy/lib"/>
+		<jar destfile="deploy/lib/ProxyHandler.jar">
+			<fileset dir="bin">
+				<include name="com/devwithimagination/proxy/handler/**/*.*" />
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="Build EAR" depends="Build Server Source">
+		<mkdir dir="deploy"/>
+		<mkdir dir="deploy/apps"/>
+		<mkdir dir="deploy/apps/ProxyTestWarBuild"/>
+		
+		<copy todir="deploy/apps/ProxyTestWarBuild" >
+			<fileset dir="web">
+				<include name="WEB-INF/**/*.*"/>
+			</fileset>
+		</copy>
+		
+		<mkdir dir="deploy/apps/ProxyTestWarBuild/WEB-INF/classes"/>
+		<copy todir="deploy/apps/ProxyTestWarBuild/WEB-INF/classes">
+			<fileset dir="bin">
+				<include name="com/devwithimagination/proxy/web/**/*.*" />
+			</fileset>
+		</copy>
+		
+		<jar destfile="deploy/apps/ProxyTest.war" basedir="deploy/apps/ProxyTestWarBuild"/>
+		
+		<mkdir dir="deploy/apps/ProxyTestEarBuild"/>
+		
+		<jar destfile="deploy/apps/ProxyTestEarBuild/ProxyTest.jar">
+			<fileset dir="bin">
+				<include name="com/devwithimagination/proxy/ws/**/*.*" />
+			</fileset>
+			<fileset dir="ear">
+				<include name="META-INF/sun-ejb-jar.xml"/>
+			</fileset>
+		</jar>
+		
+		<copy todir="deploy/apps/ProxyTestEarBuild">
+			<fileset dir="ear">
+				<include name="META-INF/application.xml"/>
+				<include name="META-INF/sun-application.xml"/>
+			</fileset>
+			<fileset dir="deploy/apps" includes="ProxyTest.war"/>
+		</copy>
+		
+		<jar destfile="deploy/apps/ProxyTest.ear" basedir="deploy/apps/ProxyTestEarBuild"/>
+		
+	</target>
+
+	<target name="clean" description="clean up">
+		<delete dir="bin"/>
+	</target>
+
+</project>
