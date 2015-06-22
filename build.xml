@@ -23,6 +23,23 @@
 		</classpath>
 	</taskdef>
 
+	<target name="Build Client Source" description="compile the client source">
+
+		<delete dir="clientBin" />
+		<mkdir dir="clientBin" />
+
+		<javac srcdir="clientSrc;generatedSrc" destdir="clientBin" target="1.6" source="1.6" />
+	</target>
+	
+	<target name="Run Test Client" depends="Build Client Source">
+	
+		<java fork="true" classpath="clientBin" classname="com.devwithimagination.proxy.client.TestClient">
+			<jvmarg value="-Djavax.net.ssl.keyStore=/Users/david/Documents/Keys/devclient/keystore.jks"/>
+			<jvmarg value="-Djavax.net.ssl.keyStorePassword=changeit"/>
+		</java>
+		
+	</target>
+
 	<target name="Build Server Source" description="compile the server source">
 
 		<delete dir="bin" />
@@ -92,7 +109,7 @@
 		<wsimport debug="true" verbose="true" keep="true" xendorsed="true" destdir="generatedBin" sourcedestdir="generatedSrc" 
 			package="com.devwithimagination.proxy.ws.two" wsdl="http://dev-ws.local/HelloTwoWS?wsdl">
 		</wsimport>
-		
+
 		<!-- wsimport -->
 		<wsimport debug="true" verbose="true" keep="true" xendorsed="true" destdir="generatedBin" sourcedestdir="generatedSrc" 
 			package="com.devwithimagination.proxy.ws.one" wsdl="https://dev-ws.local/HelloWS?wsdl">
