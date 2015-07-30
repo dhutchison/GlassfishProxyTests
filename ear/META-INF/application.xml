@@ -7,7 +7,7 @@
 	<module>
 		<web>
 			<web-uri>ProxyTest.war</web-uri>
-			<context-root>test</context-root>
+			<context-root>/</context-root>
 		</web>
 	</module>
 

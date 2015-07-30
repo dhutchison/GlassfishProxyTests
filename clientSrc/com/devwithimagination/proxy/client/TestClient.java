@@ -5,15 +5,19 @@ import java.net.URL;
 
 import com.devwithimagination.proxy.ws.one.HelloWS;
 import com.devwithimagination.proxy.ws.one.HelloWS_Service;
+import com.devwithimagination.proxy.ws.three.WarWSService;
 import com.devwithimagination.proxy.ws.two.HelloTwoWS;
 import com.devwithimagination.proxy.ws.two.HelloTwoWS_Service;
 
 public class TestClient {
 
-	private static String DIRECT_HTTPS_SERVER = "https://dev-ws.local/";
-	private static String DIRECT_HTTP_SERVER = "http://dev-ws.local/";
-	private static String PROXY_SERVER_AJP = "https://dev-lamp.local/earajp/";
-	private static String PROXY_SERVER_HTTPS = "https://dev-lamp.local/earhttpcustomhandler/";
+	private static String DIRECT_HTTPS_GF3_SERVER = "https://dev-gf3.local/";
+	private static String DIRECT_HTTPS_GF4_SERVER = "https://dev-gf4.local/";
+	private static String DIRECT_HTTPS_PROXY_SERVER = "https://dev-lamp.local/";
+	private static String PROXY_SERVER_AJP_GF3 = "https://dev-lamp.local/earajp3/";
+	private static String PROXY_SERVER_AJP_GF4 = "https://dev-lamp.local/earajp4/";
+	private static String PROXY_SERVER_HTTPS_GF3 = "https://dev-lamp.local/earhttpcustomhandler3/";
+	private static String PROXY_SERVER_HTTPS_GF4 = "https://dev-lamp.local/earhttpcustomhandler4/";
 	
 	public TestClient() {
 	
@@ -25,7 +29,13 @@ public class TestClient {
 	public void doTests() {
 		
 		try {
-			testOne(DIRECT_HTTPS_SERVER);
+			testOne(DIRECT_HTTPS_GF3_SERVER);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			testOne(DIRECT_HTTPS_GF3_SERVER);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -33,7 +43,7 @@ public class TestClient {
 		try {
 			Thread.sleep(1000);
 			
-			testOne(PROXY_SERVER_AJP);
+			testOne(PROXY_SERVER_AJP_GF3);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -41,7 +51,7 @@ public class TestClient {
 		try {
 			Thread.sleep(1000);
 			
-			testOne(PROXY_SERVER_HTTPS);
+			testOne(PROXY_SERVER_AJP_GF4);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -49,7 +59,34 @@ public class TestClient {
 		try {
 			Thread.sleep(1000);
 			
-			testTwo(DIRECT_HTTP_SERVER);
+			testOne(DIRECT_HTTPS_PROXY_SERVER);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		/* This fails as the WS is configured to require HTTPS  */
+//		try {
+//			Thread.sleep(1000);
+//			
+//			testOne(PROXY_SERVER_HTTPS_GF3);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+		/* This fails as the WS is configured to require HTTPS but we are attempting to proxy to HTTP, this results in a redirect */
+//		try {
+//			Thread.sleep(1000);
+//			
+//			testOne(PROXY_SERVER_HTTPS_GF4);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+		
+		try {
+			Thread.sleep(1000);
+			
+			testTwo(DIRECT_HTTPS_GF3_SERVER);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,7 +94,7 @@ public class TestClient {
 		try {
 			Thread.sleep(1000);
 			
-			testTwo(PROXY_SERVER_AJP);
+			testTwo(DIRECT_HTTPS_GF4_SERVER);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -65,7 +102,78 @@ public class TestClient {
 		try {
 			Thread.sleep(1000);
 			
-			testTwo(PROXY_SERVER_HTTPS);
+			testTwo(PROXY_SERVER_AJP_GF3);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			Thread.sleep(1000);
+			
+			testTwo(PROXY_SERVER_AJP_GF4);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+//		try {
+//			Thread.sleep(1000);
+//			
+//			testTwo(PROXY_SERVER_HTTPS);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+		try {
+			testThree(DIRECT_HTTPS_GF3_SERVER);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			testThree(DIRECT_HTTPS_GF3_SERVER);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			Thread.sleep(1000);
+			
+			testThree(PROXY_SERVER_AJP_GF3);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			Thread.sleep(1000);
+			
+			testThree(PROXY_SERVER_AJP_GF4);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		/* This fails with a 500 error - null pointer in apache connector */
+//		try {
+//			Thread.sleep(1000);
+//			
+//			testThree(DIRECT_HTTPS_PROXY_SERVER);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+		/* This fails as the WS is configured to require HTTPS  */
+		try {
+			Thread.sleep(1000);
+			
+			testThree(PROXY_SERVER_HTTPS_GF3);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		/* This fails as the WS is configured to require HTTPS but we are attempting to proxy to HTTP, this results in a redirect */
+		try {
+			Thread.sleep(1000);
+			
+			testThree(PROXY_SERVER_HTTPS_GF4);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -100,12 +208,41 @@ public class TestClient {
 		HelloTwoWS port = service.getHelloTwoWSPort();
 		
 		
+		try {
+			String result = port.getHelloWithAuth(sourceString);
+			System.out.println("Result 2-1: " + result);
+			System.out.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
-		String result = port.getHelloWithAuth(sourceString);
-		System.out.println("Result 2: " + result);
+		try {
+			Thread.sleep(1000);
+			String result = port.getHello(sourceString);
+			System.out.println("Result 2-2: " + result);
+			System.out.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	private void testThree(String server) throws MalformedURLException {
+		
+		URL url = new URL(server + "WarWSService?wsdl");
+		String sourceString = "Testing 3: " + url;
+		System.out.println("Source 3: " + sourceString);
 		System.out.flush();
 		
+		WarWSService service = new WarWSService(url);
+		com.devwithimagination.proxy.ws.three.WarWS port = service.getWarWSPort();
 		
+		
+		
+		String result = port.getHello(sourceString);
+		System.out.println("Result 3: " + result);
+		System.out.flush();
 	}
 	
 	

@@ -21,24 +21,25 @@ public class ApacheProxyHandler extends ProxyHandler {
 		/* Pull the certificates out of the headers in the format used by Apache */
 		List<X509Certificate> certs = new ArrayList<X509Certificate>();
 
+		/* Load the client certificate */
+		X509Certificate clientCert = getCert(request, "PROXY-SSL_CLIENT_CERT");
+		if (clientCert != null) {
+			certs.add(clientCert);
+		}
+
+		/* Load the certificate chain details */
 		for (int i = 0; i < 3; i++) {
 
-			X509Certificate clientCert = getCert(request,
-					"PROXY-SSL_CLIENT_CERT_CHAIN_" + i);
+			clientCert = getCert(request, "PROXY-SSL_CLIENT_CERT_CHAIN_" + i);
 			if (clientCert != null) {
 				certs.add(clientCert);
 			}
 		}
 
-		if (certs.isEmpty()) {
-			/* Fallback */
-			X509Certificate clientCert = getCert(request,
-					"PROXY-SSL_CLIENT_CERT");
-			if (clientCert != null) {
-				certs.add(clientCert);
-			}
-		}
-
+		/*
+		 * Convert the list into the return type. Based on the default
+		 * implementation this can be null if there are no certs
+		 */
 		X509Certificate[] certArray = null;
 		if (!certs.isEmpty()) {
 			certArray = certs.toArray(new X509Certificate[certs.size()]);
@@ -59,8 +60,9 @@ public class ApacheProxyHandler extends ProxyHandler {
 			System.out.println("Certificate: \n\"" + clientCert + "\"");
 
 			clientCert = clientCert.replaceAll("(?<!(BEGIN|END)) ", "\n");
-			
-			System.out.println("Certificate (post change): \n\"" + clientCert + "\"");
+
+			System.out.println("Certificate (post change): \n\"" + clientCert
+					+ "\"");
 			byte[] certBytes = null;
 			try {
 				certBytes = clientCert.getBytes("UTF-8");
@@ -71,7 +73,7 @@ public class ApacheProxyHandler extends ProxyHandler {
 			CertificateFactory cf = CertificateFactory.getInstance("X.509");
 
 			cert = (X509Certificate) cf.generateCertificate(bais);
-			
+
 			System.out.println("Loaded certificate: \n" + cert);
 		} else {
 			System.out.println("Null cert");

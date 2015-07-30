@@ -23,8 +23,9 @@ DTD GlassFish Application Server 3.0 EJB 3.1//EN"
 				<endpoint-address-uri>HelloTwoWS</endpoint-address-uri>
 				<login-config>
 					<auth-method>CLIENT-CERT</auth-method>
-					<realm>certificate</realm>
+					<realm-name>certificate</realm-name>
 				</login-config>
+				<transport-guarantee>CONFIDENTIAL</transport-guarantee>
 			</webservice-endpoint>
 		</ejb>
 	</enterprise-beans>
